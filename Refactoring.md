@@ -9,3 +9,13 @@ You've been asked to refactor the function `deterministicPartitionKey` in [`dpk.
 You will be graded on the exhaustiveness and quality of your unit tests, the depth of your refactor, and the level of insight into your thought process provided by the written explanation.
 
 ## Your Explanation Here
+
+The function logic can be simplified as follows:
+
+1. If the event is undefined, null, or 0, it should return `TRIVIAL_PARTITION_KEY`, i.e., '0'.
+2. If the event is defined but the partition key is `undefined`, it should return the hash of the stringified event.
+3. If the partition key is defined, it should first be converted to a string if it is not already one. If the resulting string is less than `MAX_PARTITION_KEY_LENGTH`(256) characters, it should be returned as is; otherwise, its hash should be returned.
+
+For better readability, I have extracted the functions `_toString` and `_createHash`.
+
+Note: In the original code, if the partition key was undefined and the event was defined, the code would check if the hash was less than `MAX_PARTITION_KEY_LENGTH` (256). However, this logic is unnecessary as the hash function always returns 128 characters hash, which is always less than 256. Therefore, I have removed this check.
